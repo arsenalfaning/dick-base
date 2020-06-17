@@ -1,0 +1,31 @@
+spring:
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+    default-property-inclusion: non_null
+#    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+server:
+  port: 9000
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  typeAliasesPackage: com.dick.base.*.model
+  global-config:
+    id-type: 4
+    field-strategy: 2
+    db-column-underline: true
+    logic-delete-value: 1
+    logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    jdbc-type-for-null: 'null'
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+base:
+  const:
+    tokenName: X-Token
+  exception:
+    systemError: system.error
