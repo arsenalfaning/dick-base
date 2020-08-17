@@ -1,16 +1,22 @@
 package com.dick.base.session.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.dick.base.exception.BaseRuntimeException;
+import com.dick.base.exception.ExceptionProperties;
 import com.dick.base.exception.UsernameDuplicatedException;
 import com.dick.base.mapper.BaseUserMapper;
 import com.dick.base.model.BaseUser;
 import com.dick.base.security.BaseUserDetails;
+import com.dick.base.session.dto.SignInParameter;
 import com.dick.base.session.dto.SignInResult;
 import com.dick.base.session.dto.SignUpParameter;
+import com.dick.base.session.dto.UserBaseInfo;
 import com.dick.base.util.BaseRedisProperties;
 import com.dick.base.util.IdUtil;
 import com.dick.base.util.PasswordUtil;
+import com.dick.base.util.TokenUtil;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,7 +36,7 @@ public class SessionService implements UserDetailsService {
     }
 
     /**
-     * 注册用户
+     * 用户注册
      * @param signUpParameter
      */
     public void signUp(SignUpParameter signUpParameter) {
@@ -47,14 +53,51 @@ public class SessionService implements UserDetailsService {
         baseUserMapper.insert(baseUser);
     }
 
+    /**
+     * 用户登录
+     * @param signInParameter
+     * @return
+     */
+    public SignInResult signIn(SignInParameter signInParameter) {
+        BaseUser baseUser = new BaseUser();
+        baseUser.setUsername(signInParameter.getUsername());
+        BaseUser result = baseUserMapper.selectOne(new QueryWrapper<>(baseUser));
+        if (result != null) {
+            if (PasswordUtil.checkPassword(signInParameter.getPassword(), result.getSalt(), result.getPassword())) {
+                SignInResult signInResult = new SignInResult();
+                signInResult.setId(result.getId());
+                signInResult.setSignUpTime(LocalDateTime.now());
+                signInResult.setUsername(result.getUsername());
+                signInResult.setToken(TokenUtil.generateUserToken());
+
+                result.setSignInToken(signInResult.getToken());
+                result.setSignUpTime(signInResult.getSignUpTime());
+                baseUserMapper.updateById(result);
+
+                UserBaseInfo baseInfo = new UserBaseInfo();
+                baseInfo.setId(result.getId());
+                baseInfo.setSignUpTime(LocalDateTime.now());
+                baseInfo.setUsername(result.getUsername());
+                //TODO baseInfo设置角色和权限
+                redisTemplate.opsForValue().set(redisKeyForSignIn(signInResult.getToken()), baseInfo);
+                return signInResult;
+            }
+        }
+        throw new BaseRuntimeException(ExceptionProperties.getInstance().getUsernameOrPasswordError(), HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String token) throws UsernameNotFoundException {
         String key = redisKeyForSignIn(token);
-        SignInResult result = (SignInResult) redisTemplate.opsForValue().get(key);
-        return new BaseUserDetails(result);
+        UserBaseInfo user = (UserBaseInfo) redisTemplate.opsForValue().get(key);
+        return new BaseUserDetails(user);
     }
 
     protected String redisKeyForSignIn(String token) {
         return String.format(BaseRedisProperties.getInstance().getLoginToken(), token);
+    }
+
+    protected String redisKeyForPasswordReset(String token) {
+        return String.format(BaseRedisProperties.getInstance().getPasswordResetToken(), token);
     }
 }

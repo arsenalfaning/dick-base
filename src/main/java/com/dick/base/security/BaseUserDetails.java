@@ -1,6 +1,6 @@
 package com.dick.base.security;
 
-import com.dick.base.session.dto.SignInResult;
+import com.dick.base.session.dto.UserBaseInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,20 +9,20 @@ import java.util.HashSet;
 
 public class BaseUserDetails implements UserDetails {
 
-    private SignInResult signInResult;
+    private UserBaseInfo user;
 
-    public BaseUserDetails(SignInResult signInResult) {
-        this.signInResult = signInResult;
+    public BaseUserDetails(UserBaseInfo user) {
+        this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new HashSet<>();
-        if (signInResult.getAuthorities() != null) {
-            signInResult.getAuthorities().forEach(auth -> authorities.add(new BaseAuthority(auth)));
+        if (user.getAuthorities() != null) {
+            user.getAuthorities().forEach(auth -> authorities.add(new BaseAuthority(auth)));
         }
-        if (signInResult.getRoles() != null) {
-            signInResult.getRoles().forEach(auth -> authorities.add(new BaseRoleAuthority(auth)));
+        if (user.getRoles() != null) {
+            user.getRoles().forEach(auth -> authorities.add(new BaseRoleAuthority(auth)));
         }
         return authorities;
     }
@@ -34,7 +34,7 @@ public class BaseUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return signInResult.getUsername();
+        return user.getUsername();
     }
 
     @Override
@@ -57,8 +57,8 @@ public class BaseUserDetails implements UserDetails {
         return true;
     }
 
-    public SignInResult getSignInResult() {
-        return signInResult;
+    public UserBaseInfo getUser() {
+        return user;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.dick.base.session.api;
 
+import com.dick.base.session.dto.SignInParameter;
+import com.dick.base.session.dto.SignInResult;
 import com.dick.base.session.dto.SignUpParameter;
 import com.dick.base.session.service.SessionService;
 import com.dick.base.util.BaseResult;
@@ -24,5 +26,10 @@ public class SessionApi {
     public BaseResult<Void> signUp(@RequestBody @Valid SignUpParameter parameter) {
         sessionService.signUp(parameter);
         return BaseResult.voidResult();
+    }
+
+    @PostMapping("sign-in")
+    public BaseResult<SignInResult> signIn(@RequestBody @Valid SignInParameter parameter) {
+        return BaseResult.of(sessionService.signIn(parameter));
     }
 }

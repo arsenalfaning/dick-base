@@ -13,13 +13,13 @@ public class BaseRuntimeException extends RuntimeException{
 
     protected HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    protected BaseRuntimeException() {
+    public BaseRuntimeException() {
         super(code);
     }
-    protected BaseRuntimeException(String message) {
+    public BaseRuntimeException(String message) {
         super(message);
     }
-    protected BaseRuntimeException(String message, HttpStatus status) {
+    public BaseRuntimeException(String message, HttpStatus status) {
         super(message);
         this.status = status;
     }

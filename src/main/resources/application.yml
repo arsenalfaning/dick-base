@@ -33,3 +33,4 @@ base:
   exception:
     systemError: system.error
     usernameDuplicated: username.duplicated
+    usernameOrPasswordError: username.password.error
