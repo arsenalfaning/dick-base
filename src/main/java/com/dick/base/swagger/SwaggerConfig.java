@@ -42,8 +42,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("warrant")
-                .description("warrant document")
+                .title("dick")
+                .description("dick document")
                 .version("1.0")
                 .build();
 

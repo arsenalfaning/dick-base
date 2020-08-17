@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Data
-public class SignInParameter {
+public class SignUpParameter {
 
     @NotEmpty(message = ValidateMessageCodes.Username_NotEmpty)
     @Size(min = 6, max =32, message = ValidateMessageCodes.Username_Size)

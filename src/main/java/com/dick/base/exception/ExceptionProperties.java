@@ -7,4 +7,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class ExceptionProperties {
     private String systemError;
+    private String usernameDuplicated;
 }

@@ -11,7 +11,7 @@ server:
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
-  typeAliasesPackage: com.dick.base.*.model
+  typeAliasesPackage: com.dick.*.model
   global-config:
     id-type: 4
     field-strategy: 2
@@ -27,5 +27,9 @@ mybatis-plus:
 base:
   const:
     tokenName: X-Token
+  redis:
+    loginToken: users.token.%s
+    passwordResetToken: password.reset.token.%s
   exception:
     systemError: system.error
+    usernameDuplicated: username.duplicated

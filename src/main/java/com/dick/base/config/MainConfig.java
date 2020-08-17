@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.dick.base.exception.ExceptionProperties;
 import com.dick.base.util.BaseConstProperties;
+import com.dick.base.util.BaseRedisProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -27,16 +29,16 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
-//import org.springframework.data.redis.connection.RedisConnectionFactory;
-//import org.springframework.data.redis.core.RedisTemplate;
-//import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-//import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
 @EnableCaching
 @Configuration
-@EnableConfigurationProperties({ExceptionProperties.class, BaseConstProperties.class})
+@EnableConfigurationProperties({ExceptionProperties.class, BaseConstProperties.class, BaseRedisProperties.class})
 public class MainConfig {
 
     @Autowired
@@ -90,28 +92,28 @@ public class MainConfig {
         return new OptimisticLockerInterceptor();
     }
 
-//    @Bean(name = "redisTemplate")
-//    public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        initObjectMapper(objectMapper);
-//        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
-//        RedisTemplate<String, Object> template = new RedisTemplate<>();
-//        template.setConnectionFactory(redisConnectionFactory);
-//        //使用genericJackson2JsonRedisSerializer来序列化和反序列化redis的value值
-//        GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
-//        template.setValueSerializer(genericJackson2JsonRedisSerializer);
-//
-//        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-//        //使用StringRedisSerializer来序列化和反序列化redis的key值
-//        template.setKeySerializer(stringRedisSerializer);
-//        // hash的key也采用String的序列化方式
-//        template.setHashKeySerializer(stringRedisSerializer);
-//        // value序列化方式采用jackson
-//        template.setValueSerializer(genericJackson2JsonRedisSerializer);
-//        // hash的value序列化方式采用jackson
-//        template.setHashValueSerializer(genericJackson2JsonRedisSerializer);
-//        template.afterPropertiesSet();
-//        return template;
-//    }
+    @Bean(name = "redisTemplate")
+    public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        initObjectMapper(objectMapper);
+        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+        //使用genericJackson2JsonRedisSerializer来序列化和反序列化redis的value值
+        GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+        template.setValueSerializer(genericJackson2JsonRedisSerializer);
+
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        //使用StringRedisSerializer来序列化和反序列化redis的key值
+        template.setKeySerializer(stringRedisSerializer);
+        // hash的key也采用String的序列化方式
+        template.setHashKeySerializer(stringRedisSerializer);
+        // value序列化方式采用jackson
+        template.setValueSerializer(genericJackson2JsonRedisSerializer);
+        // hash的value序列化方式采用jackson
+        template.setHashValueSerializer(genericJackson2JsonRedisSerializer);
+        template.afterPropertiesSet();
+        return template;
+    }
 
 }

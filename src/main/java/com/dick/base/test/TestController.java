@@ -6,10 +6,7 @@ import com.dick.base.session.dto.SignInResult;
 import com.dick.base.util.BaseConstProperties;
 import com.dick.base.util.BaseResult;
 import com.dick.base.util.DateUtil;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -38,7 +35,7 @@ public class TestController {
     }
 
     @GetMapping("test/time")
-    public SignInResult test3() {
+    public SignInResult test3(@Valid SignInParameter signInParameter) {
         SignInResult result = new SignInResult();
         result.setTime(DateUtil.now());
         return result;
