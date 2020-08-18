@@ -2,13 +2,17 @@ package com.dick.base.test;
 
 import com.dick.base.exception.ErrUtil;
 import com.dick.base.session.dto.SignInParameter;
-import com.dick.base.session.dto.SignInResult;
 import com.dick.base.util.BaseConstProperties;
 import com.dick.base.util.BaseResult;
 import com.dick.base.util.DateUtil;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @RestController
 public class TestController {
@@ -34,10 +38,9 @@ public class TestController {
         return BaseResult.voidResult();
     }
 
-    @GetMapping("test/time")
-    public SignInResult test3(@Valid SignInParameter signInParameter) {
-        SignInResult result = new SignInResult();
-        result.setTime(DateUtil.now());
-        return result;
+    @GetMapping("api/test/time")
+    @PreAuthorize("hasRole('a')")
+    public LocalDateTime test3(@Valid SignInParameter signInParameter) {
+        return DateUtil.now();
     }
 }

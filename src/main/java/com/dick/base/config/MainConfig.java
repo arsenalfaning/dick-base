@@ -101,8 +101,6 @@ public class MainConfig {
         template.setConnectionFactory(redisConnectionFactory);
         //使用genericJackson2JsonRedisSerializer来序列化和反序列化redis的value值
         GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
-        template.setValueSerializer(genericJackson2JsonRedisSerializer);
-
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         //使用StringRedisSerializer来序列化和反序列化redis的key值
         template.setKeySerializer(stringRedisSerializer);

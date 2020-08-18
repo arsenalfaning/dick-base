@@ -1,5 +1,6 @@
 package com.dick.base.security;
 
+import com.dick.base.session.service.SessionService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,17 +16,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private BaseAuthenticationTokenFilter baseAuthenticationTokenFilter;
+    private SessionService sessionService;
 
-    public SecurityConfig(BaseAuthenticationTokenFilter baseAuthenticationTokenFilter) {
-        this.baseAuthenticationTokenFilter = baseAuthenticationTokenFilter;
+    public SecurityConfig(SessionService sessionService) {
+        this.sessionService = sessionService;
     }
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/public/**", "/static/**");
+        web.ignoring().antMatchers("/public/**", "/");
         web.ignoring().antMatchers("/v2/api-docs", "/webjars/**", "/swagger-resources/**");
-        web.ignoring().antMatchers("/**.html", "/**.js", "/**.css", "/**.ico", "/static/**", "/**.png", "/**.svg");
+        web.ignoring().antMatchers("/**.html", "/**.js", "/**.css", "/**.ico","/static/**", "/**.png", "/**.svg");
         web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
     }
 
@@ -34,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.headers().cacheControl();
         httpSecurity.csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/api/admin/**").hasRole("a")
                 .and()
                 .formLogin().disable() //不要UsernamePasswordAuthenticationFilter
                 .httpBasic().disable() //不要BasicAuthenticationFilter
@@ -41,6 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .securityContext().and()
                 .anonymous().disable()
                 .servletApi();
-        httpSecurity.addFilterBefore(baseAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(new BaseAuthenticationTokenFilter(sessionService), UsernamePasswordAuthenticationFilter.class);
     }
 }

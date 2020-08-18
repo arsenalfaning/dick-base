@@ -23,4 +23,8 @@ public class BaseUser {
     private LocalDateTime signUpTime;
     @JsonIgnore
     private String signInToken;
+
+    private String roles;
+
+    private String authorities;
 }

@@ -11,16 +11,14 @@ import com.dick.base.session.dto.SignInParameter;
 import com.dick.base.session.dto.SignInResult;
 import com.dick.base.session.dto.SignUpParameter;
 import com.dick.base.session.dto.UserBaseInfo;
-import com.dick.base.util.BaseRedisProperties;
-import com.dick.base.util.IdUtil;
-import com.dick.base.util.PasswordUtil;
-import com.dick.base.util.TokenUtil;
+import com.dick.base.util.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -64,6 +62,10 @@ public class SessionService implements UserDetailsService {
         BaseUser result = baseUserMapper.selectOne(new QueryWrapper<>(baseUser));
         if (result != null) {
             if (PasswordUtil.checkPassword(signInParameter.getPassword(), result.getSalt(), result.getPassword())) {
+                if (!StringUtils.isEmpty(result.getSignInToken())) {
+                    redisTemplate.delete(redisKeyForSignIn(result.getSignInToken()));
+                }
+
                 SignInResult signInResult = new SignInResult();
                 signInResult.setId(result.getId());
                 signInResult.setSignUpTime(LocalDateTime.now());
@@ -78,7 +80,8 @@ public class SessionService implements UserDetailsService {
                 baseInfo.setId(result.getId());
                 baseInfo.setSignUpTime(LocalDateTime.now());
                 baseInfo.setUsername(result.getUsername());
-                //TODO baseInfo设置角色和权限
+                baseInfo.setRoles(AuthorityUtil.decode(result.getRoles()));
+                baseInfo.setAuthorities(AuthorityUtil.decode(result.getAuthorities()));
                 redisTemplate.opsForValue().set(redisKeyForSignIn(signInResult.getToken()), baseInfo);
                 return signInResult;
             }

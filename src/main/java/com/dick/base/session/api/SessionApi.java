@@ -25,6 +25,7 @@ public class SessionApi {
     @PostMapping("sign-up")
     public BaseResult<Void> signUp(@RequestBody @Valid SignUpParameter parameter) {
         sessionService.signUp(parameter);
+
         return BaseResult.voidResult();
     }
 
