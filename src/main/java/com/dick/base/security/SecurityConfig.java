@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.headers().cacheControl();
         httpSecurity.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/admin/**").hasRole("a")
+                .antMatchers("/api/**").authenticated()
                 .and()
                 .formLogin().disable() //不要UsernamePasswordAuthenticationFilter
                 .httpBasic().disable() //不要BasicAuthenticationFilter

@@ -39,7 +39,7 @@ public class TestController {
     }
 
     @GetMapping("api/test/time")
-    @PreAuthorize("hasRole('a')")
+    @PreAuthorize("hasAuthority(#signInParameter.username)")
     public LocalDateTime test3(@Valid SignInParameter signInParameter) {
         return DateUtil.now();
     }
