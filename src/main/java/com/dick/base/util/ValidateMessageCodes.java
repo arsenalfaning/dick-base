@@ -13,4 +13,8 @@ public class ValidateMessageCodes {
     public static final String Authority_AuthorityCode_Size = "{authority.AuthorityCode.size}";
     public static final String Authority_AuthorityType_Range = "{authority.authorityType.range}";
 
+    public static final String Role_Name_NotEmpty = "{role.name.notEmpty}";
+    public static final String Role_Name_Size = "{role.name.size}";
+    public static final String Role_RoleCode_NotEmpty = "{role.roleCode.notEmpty}";
+    public static final String Role_RoleCode_Size = "{role.roleCode.size}";
 }

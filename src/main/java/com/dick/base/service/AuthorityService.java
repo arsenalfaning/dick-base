@@ -4,17 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dick.base.aop.SmartQuery;
 import com.dick.base.mapper.*;
-import com.dick.base.model.BaseAuthority;
-import com.dick.base.model.BaseAuthorityPath;
-import com.dick.base.model.BaseRole;
-import com.dick.base.model.BaseUserAuthority;
+import com.dick.base.model.*;
 import com.dick.base.security.AuthorityNode;
 import com.dick.base.security.dto.AuthorityAddParameter;
+import com.dick.base.security.dto.RoleAddParameter;
 import com.dick.base.util.PageInfo;
 import com.dick.base.util.SmartQueryUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @Service
@@ -36,9 +36,44 @@ public class AuthorityService {
         this.baseUserAuthorityMapper = baseUserAuthorityMapper;
     }
 
+    /**
+     * 角色分页查询
+     * @param pageInfo
+     * @param baseRole
+     * @return
+     */
     @SmartQuery(clazz = BaseRole.class, likeFields = "name")
     public IPage<BaseRole> rolePage(PageInfo pageInfo, BaseRole baseRole) {
         return baseRoleMapper.selectPage(SmartQueryUtil.getPage(), SmartQueryUtil.getQueryWrapper());
+    }
+
+    /**
+     * 角色添加
+     * @param parameter
+     * @return
+     */
+    public BaseRole addRole(@RequestBody @Valid RoleAddParameter parameter) {
+        BaseRole role = new BaseRole();
+        role.setName(parameter.getName());
+        role.setRoleCode(parameter.getRoleCode());
+        baseRoleMapper.insert(role);
+        return role;
+    }
+
+    /**
+     * 角色删除
+     * <pre>
+     *     1.删除role
+     *     2.删除关系
+     * </pre>
+     * @param id
+     */
+    @Transactional
+    public void removeRole(Integer id) {
+        baseRoleMapper.deleteById(id);
+        BaseUserRole userRole = new BaseUserRole();
+        userRole.setRoleId(id);
+        baseUserRoleMapper.delete(new QueryWrapper<>(userRole));
     }
 
     /**
