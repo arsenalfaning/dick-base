@@ -10,5 +10,5 @@ import org.springframework.stereotype.Service;
 public interface BaseAuthorityPathMapper extends BaseMapper<BaseAuthorityPath> {
 
     @Insert("INSERT INTO base_authority_path (ancestor,descendant,distance) SELECT ap.ancestor,#{descendant},ap.distance + 1 FROM base_authority_path ap WHERE ap.descendant = #{parentId} UNION ALL SELECT #{descendant},#{descendant},0")
-    int addPath(@Param("descendant") Long descendant, @Param("parentId") Long parentId);
+    int addPath(@Param("descendant") Integer descendant, @Param("parentId") Integer parentId);
 }

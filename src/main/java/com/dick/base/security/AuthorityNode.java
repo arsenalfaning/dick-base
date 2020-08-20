@@ -10,8 +10,9 @@ import java.util.List;
  */
 @Data
 public class AuthorityNode {
-    private Long id;
+    private Integer id;
     private String authorityCode;
     private Byte authorityType;
+    private String name;
     private List<AuthorityNode> children = new LinkedList<>();
 }

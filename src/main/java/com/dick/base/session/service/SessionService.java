@@ -7,6 +7,7 @@ import com.dick.base.exception.UsernameDuplicatedException;
 import com.dick.base.mapper.BaseUserMapper;
 import com.dick.base.model.BaseUser;
 import com.dick.base.security.BaseUserDetails;
+import com.dick.base.service.AuthorityService;
 import com.dick.base.session.dto.SignInParameter;
 import com.dick.base.session.dto.SignInResult;
 import com.dick.base.session.dto.SignUpParameter;
@@ -27,10 +28,13 @@ public class SessionService implements UserDetailsService {
 
     private BaseUserMapper baseUserMapper;
     private RedisTemplate<String, Object> redisTemplate;
+    private AuthorityService authorityService;
 
-    public SessionService(BaseUserMapper baseUserMapper, RedisTemplate<String, Object> redisTemplate) {
+    public SessionService(BaseUserMapper baseUserMapper, RedisTemplate<String, Object> redisTemplate,
+                          AuthorityService authorityService) {
         this.baseUserMapper = baseUserMapper;
         this.redisTemplate = redisTemplate;
+        this.authorityService = authorityService;
     }
 
     /**
@@ -76,17 +80,31 @@ public class SessionService implements UserDetailsService {
                 result.setSignUpTime(signInResult.getSignUpTime());
                 baseUserMapper.updateById(result);
 
-                UserBaseInfo baseInfo = new UserBaseInfo();
-                baseInfo.setId(result.getId());
-                baseInfo.setSignUpTime(LocalDateTime.now());
-                baseInfo.setUsername(result.getUsername());
-                baseInfo.setRoles(AuthorityUtil.decode(result.getRoles()));
-                baseInfo.setAuthorities(AuthorityUtil.decode(result.getAuthorities()));
-                redisTemplate.opsForValue().set(redisKeyForSignIn(signInResult.getToken()), baseInfo);
+                UserBaseInfo baseInfo = getUserBaseInfoFromDB(result);
+                refreshUserBaseInfoToRedis(signInResult.getToken(), baseInfo);
                 return signInResult;
             }
         }
         throw new BaseRuntimeException(ExceptionProperties.getInstance().getUsernameOrPasswordError(), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 更新用户信息到redis
+     * @param token
+     * @param baseInfo
+     */
+    public void refreshUserBaseInfoToRedis(String token, UserBaseInfo baseInfo) {
+        redisTemplate.opsForValue().set(redisKeyForSignIn(token), baseInfo);
+    }
+
+    private UserBaseInfo getUserBaseInfoFromDB(BaseUser user) {
+        UserBaseInfo baseInfo = new UserBaseInfo();
+        baseInfo.setId(user.getId());
+        baseInfo.setUsername(user.getUsername());
+        baseInfo.setSignUpTime(LocalDateTime.now());
+        baseInfo.setRoles(authorityService.getRoleSetByUserId(user.getId()));
+        baseInfo.setAuthorities(authorityService.getAuthoritySetByUserId(user.getId()));
+        return baseInfo;
     }
 
     @Override

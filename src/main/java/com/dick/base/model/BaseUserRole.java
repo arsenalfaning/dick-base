@@ -5,15 +5,14 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-@TableName("base_authority_path")
+@TableName("base_user_role")
 @Data
-public class BaseAuthorityPath {
+public class BaseUserRole {
+
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
-    private Integer ancestor;
+    private Long userId;
 
-    private Integer descendant;
-
-    private Integer distance;
+    private Integer roleId;
 }

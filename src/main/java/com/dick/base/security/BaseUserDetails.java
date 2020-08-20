@@ -19,10 +19,10 @@ public class BaseUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new HashSet<>();
         if (user.getAuthorities() != null) {
-            user.getAuthorities().forEach(auth -> authorities.add(new BaseAuthority(auth)));
+            user.getAuthorities().forEach(auth -> authorities.add(new BaseAuthority(auth.toString())));
         }
         if (user.getRoles() != null) {
-            user.getRoles().forEach(auth -> authorities.add(new BaseRoleAuthority(auth)));
+            user.getRoles().forEach(auth -> authorities.add(new BaseRoleAuthority(auth.toString())));
         }
         return authorities;
     }

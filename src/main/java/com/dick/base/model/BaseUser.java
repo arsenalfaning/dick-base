@@ -24,7 +24,4 @@ public class BaseUser {
     @JsonIgnore
     private String signInToken;
 
-    private String roles;
-
-    private String authorities;
 }

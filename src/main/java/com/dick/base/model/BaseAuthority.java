@@ -1,5 +1,6 @@
 package com.dick.base.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,8 +23,8 @@ public class BaseAuthority {
      */
     public static final Byte Authority_Type_Posterity = 2;
 
-    @TableId()
-    private Long id;
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
     private String name;
 

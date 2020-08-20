@@ -31,7 +31,7 @@ public class AuthorityApi {
     }
 
     @PostMapping("delete/{id}")
-    public BaseResult<Void> removeAuthority(@PathVariable Long id) {
+    public BaseResult<Void> removeAuthority(@PathVariable Integer id) {
         authorityService.removeAuthority(id);
         return BaseResult.voidResult();
     }

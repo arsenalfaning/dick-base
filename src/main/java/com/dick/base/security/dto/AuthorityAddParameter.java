@@ -19,5 +19,9 @@ public class AuthorityAddParameter {
     @Max(value = 2, message = ValidateMessageCodes.Authority_AuthorityType_Range)
     private Byte authorityType;
 
-    private Long parentId;
+    @Size(min = 1, max = 32, message = ValidateMessageCodes.Authority_AuthorityCode_Size)
+    @NotEmpty(message = ValidateMessageCodes.Authority_AuthorityCode_NotEmpty)
+    private String authorityCode;
+
+    private Integer parentId;
 }
