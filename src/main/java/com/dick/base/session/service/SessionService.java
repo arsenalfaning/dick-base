@@ -97,6 +97,17 @@ public class SessionService implements UserDetailsService {
         redisTemplate.opsForValue().set(redisKeyForSignIn(token), baseInfo);
     }
 
+    /**
+     * 更新用户信息到redis
+     * @param userId
+     */
+    public void refreshUserBaseInfoToRedisByUserId(Long userId) {
+        BaseUser user = baseUserMapper.selectById(userId);
+        if (!StringUtils.isEmpty(user.getSignInToken())) {
+            refreshUserBaseInfoToRedis(user.getSignInToken(), getUserBaseInfoFromDB(user));
+        }
+    }
+
     private UserBaseInfo getUserBaseInfoFromDB(BaseUser user) {
         UserBaseInfo baseInfo = new UserBaseInfo();
         baseInfo.setId(user.getId());
