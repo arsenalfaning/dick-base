@@ -7,14 +7,14 @@ import com.dick.base.mapper.*;
 import com.dick.base.model.*;
 import com.dick.base.security.AuthorityNode;
 import com.dick.base.security.dto.AuthorityAddParameter;
+import com.dick.base.security.dto.AuthorityModifyParameter;
 import com.dick.base.security.dto.RoleAddParameter;
+import com.dick.base.security.dto.RoleModifyParameter;
 import com.dick.base.util.PageInfo;
 import com.dick.base.util.SmartQueryUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.validation.Valid;
 import java.util.*;
 
 @Service
@@ -52,11 +52,25 @@ public class AuthorityService {
      * @param parameter
      * @return
      */
-    public BaseRole addRole(@RequestBody @Valid RoleAddParameter parameter) {
+    public BaseRole addRole(RoleAddParameter parameter) {
         BaseRole role = new BaseRole();
         role.setName(parameter.getName());
         role.setRoleCode(parameter.getRoleCode());
         baseRoleMapper.insert(role);
+        return role;
+    }
+
+    /**
+     * 角色修改
+     * @param parameter
+     * @return
+     */
+    public BaseRole modifyRole(RoleModifyParameter parameter) {
+        BaseRole role = new BaseRole();
+        role.setName(parameter.getName());
+        role.setRoleCode(parameter.getRoleCode());
+        role.setId(parameter.getId());
+        baseRoleMapper.updateById(role);
         return role;
     }
 
@@ -130,6 +144,22 @@ public class AuthorityService {
         } else {
             baseAuthorityPathMapper.insert(buildPath(authority.getId(), authority.getId(), 0));
         }
+        return authority;
+    }
+
+    /**
+     * 修改权限
+     * @param parameter
+     * @return
+     */
+    @Transactional
+    public BaseAuthority modifyAuthority(AuthorityModifyParameter parameter) {
+        BaseAuthority authority = new BaseAuthority();
+        authority.setAuthorityType(parameter.getAuthorityType());
+        authority.setName(parameter.getName());
+        authority.setAuthorityCode(parameter.getAuthorityCode());
+        authority.setId(parameter.getId());
+        baseAuthorityMapper.updateById(authority);
         return authority;
     }
 
