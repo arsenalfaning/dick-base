@@ -12,6 +12,7 @@ import com.dick.base.session.dto.SignInParameter;
 import com.dick.base.session.dto.SignInResult;
 import com.dick.base.session.dto.SignUpParameter;
 import com.dick.base.session.dto.UserBaseInfo;
+import com.dick.base.session.util.SessionUtil;
 import com.dick.base.util.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,13 @@ public class SessionService implements UserDetailsService {
         this.baseUserMapper = baseUserMapper;
         this.redisTemplate = redisTemplate;
         this.authorityService = authorityService;
+    }
+
+    /**
+     * 注销当前用户
+     */
+    public void logout() {
+        redisTemplate.delete(redisKeyForSignIn(SessionUtil.currentUser().getSignInToken()));
     }
 
     /**
@@ -115,6 +123,7 @@ public class SessionService implements UserDetailsService {
         baseInfo.setSignUpTime(LocalDateTime.now());
         baseInfo.setRoles(authorityService.getRoleSetByUserId(user.getId()));
         baseInfo.setAuthorities(authorityService.getAuthorityCodeSetByUserId(user.getId()));
+        baseInfo.setSignInToken(user.getSignInToken());
         return baseInfo;
     }
 

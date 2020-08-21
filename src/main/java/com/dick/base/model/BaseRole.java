@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @TableName("base_role")
@@ -17,6 +18,7 @@ public class BaseRole {
 
     private String roleCode;
 
+    @JsonIgnore
     @TableLogic
     private Boolean deleted;
 }

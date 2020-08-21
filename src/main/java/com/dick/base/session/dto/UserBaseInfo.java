@@ -13,6 +13,7 @@ import java.util.Set;
 public class UserBaseInfo {
     private Long id;
     private String username;
+    private String signInToken;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime signUpTime;

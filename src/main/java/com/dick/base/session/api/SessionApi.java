@@ -7,13 +7,11 @@ import com.dick.base.session.service.SessionService;
 import com.dick.base.util.BaseResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("public")
 public class SessionApi {
 
     private SessionService sessionService;
@@ -22,15 +20,20 @@ public class SessionApi {
         this.sessionService = sessionService;
     }
 
-    @PostMapping("sign-up")
+    @PostMapping("public/sign-up")
     public BaseResult<Void> signUp(@RequestBody @Valid SignUpParameter parameter) {
         sessionService.signUp(parameter);
-
         return BaseResult.voidResult();
     }
 
-    @PostMapping("sign-in")
+    @PostMapping("public/sign-in")
     public BaseResult<SignInResult> signIn(@RequestBody @Valid SignInParameter parameter) {
         return BaseResult.of(sessionService.signIn(parameter));
+    }
+
+    @PostMapping("api/logout")
+    public BaseResult<Void> logout() {
+        sessionService.logout();
+        return BaseResult.voidResult();
     }
 }
