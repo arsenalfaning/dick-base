@@ -36,4 +36,12 @@
         )
     </where>
     </select>
+
+    <select id="findByUserId" resultType="com.dick.base.model.BaseAuthority">
+        SELECT id,authority_code,authority_type,name
+        FROM base_authority
+        WHERE id IN (
+            SELECT authority_id FROM base_user_authority WHERE user_id = #{userId}
+        ) AND deleted = 0
+    </select>
 </mapper>
