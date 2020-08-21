@@ -103,7 +103,7 @@ public class SessionService implements UserDetailsService {
      */
     public void refreshUserBaseInfoToRedisByUserId(Long userId) {
         BaseUser user = baseUserMapper.selectById(userId);
-        if (!StringUtils.isEmpty(user.getSignInToken())) {
+        if (user != null && !StringUtils.isEmpty(user.getSignInToken())) {
             refreshUserBaseInfoToRedis(user.getSignInToken(), getUserBaseInfoFromDB(user));
         }
     }
