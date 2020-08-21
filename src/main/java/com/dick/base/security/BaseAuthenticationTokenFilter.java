@@ -1,7 +1,11 @@
 package com.dick.base.security;
 
+import com.dick.base.exception.ExceptionProperties;
+import com.dick.base.exception.GlobalExceptionHandler;
 import com.dick.base.session.service.SessionService;
 import com.dick.base.util.BaseConstProperties;
+import com.dick.base.util.BaseResult;
+import com.dick.base.util.JsonUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,9 +23,11 @@ import java.io.IOException;
 public class BaseAuthenticationTokenFilter extends OncePerRequestFilter {
 
     private SessionService sessionService;
+    private GlobalExceptionHandler globalExceptionHandler;
 
-    public BaseAuthenticationTokenFilter(SessionService sessionService) {
+    public BaseAuthenticationTokenFilter(SessionService sessionService, GlobalExceptionHandler globalExceptionHandler) {
         this.sessionService = sessionService;
+        this.globalExceptionHandler = globalExceptionHandler;
     }
 
     @Override
@@ -35,7 +41,8 @@ public class BaseAuthenticationTokenFilter extends OncePerRequestFilter {
                 return;
             }
         }
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+        JsonUtil.writeResponse(BaseResult.errorResult(globalExceptionHandler.getLocaleMessage(ExceptionProperties.getInstance().getUserNotLogin(), request.getLocale())), HttpStatus.UNAUTHORIZED.value());
     }
 
     private void setDetails(HttpServletRequest request, HttpServletResponse response, FilterChain chain, UserDetails userDetails) throws IOException, ServletException {

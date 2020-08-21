@@ -6,6 +6,9 @@ import com.dick.base.model.BaseUserAuthority;
 import com.dick.base.session.service.SessionService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UserAuthorityService {
 
@@ -15,6 +18,18 @@ public class UserAuthorityService {
     public UserAuthorityService(BaseUserAuthorityMapper baseUserAuthorityMapper, SessionService sessionService) {
         this.baseUserAuthorityMapper = baseUserAuthorityMapper;
         this.sessionService = sessionService;
+    }
+
+    /**
+     * 获取用户所有的权限
+     * @param userId
+     * @return
+     */
+    public List<Integer> getAuthorityIdByUser(Long userId) {
+        BaseUserAuthority userAuthority = new BaseUserAuthority();
+        userAuthority.setUserId(userId);
+        return baseUserAuthorityMapper.selectList(new QueryWrapper<>(userAuthority)).stream().map(e -> e.getAuthorityId())
+                .collect(Collectors.toList());
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.dick.base.security;
 
+import com.dick.base.exception.GlobalExceptionHandler;
 import com.dick.base.session.service.SessionService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,9 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private SessionService sessionService;
+    private GlobalExceptionHandler globalExceptionHandler;
 
-    public SecurityConfig(SessionService sessionService) {
+    public SecurityConfig(SessionService sessionService, GlobalExceptionHandler globalExceptionHandler) {
         this.sessionService = sessionService;
+        this.globalExceptionHandler = globalExceptionHandler;
     }
 
     @Override
@@ -43,6 +46,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .securityContext().and()
                 .anonymous().disable()
                 .servletApi();
-        httpSecurity.addFilterBefore(new BaseAuthenticationTokenFilter(sessionService), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(new BaseAuthenticationTokenFilter(sessionService, globalExceptionHandler), UsernamePasswordAuthenticationFilter.class);
     }
 }

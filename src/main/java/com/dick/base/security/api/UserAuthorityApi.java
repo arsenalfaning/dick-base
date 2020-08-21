@@ -2,10 +2,9 @@ package com.dick.base.security.api;
 
 import com.dick.base.service.UserAuthorityService;
 import com.dick.base.util.BaseResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/users/authorities")
@@ -15,6 +14,11 @@ public class UserAuthorityApi {
 
     public UserAuthorityApi(UserAuthorityService userAuthorityService) {
         this.userAuthorityService = userAuthorityService;
+    }
+
+    @GetMapping("all/{userId}")
+    public BaseResult<List<Integer>> getAuthorityIdByUserId(@PathVariable Long userId) {
+        return BaseResult.of(userAuthorityService.getAuthorityIdByUser(userId));
     }
 
     @PostMapping("grant/{userId}/{authorityId}")

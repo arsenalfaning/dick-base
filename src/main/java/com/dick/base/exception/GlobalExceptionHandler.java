@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 @RestControllerAdvice
 @ResponseBody
@@ -64,4 +65,9 @@ public class GlobalExceptionHandler {
         LogUtil.log.error("request error!", e);
         return new ResponseEntity<>(BaseResult.errorResult(e.getLocalizedMessage()), HttpStatus.FORBIDDEN);
     }
+
+    public String getLocaleMessage(String code, Locale locale) {
+        return messageSource.getMessage(code, null, locale);
+    }
+
 }

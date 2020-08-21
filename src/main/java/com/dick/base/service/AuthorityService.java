@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorityService {
@@ -198,9 +199,34 @@ public class AuthorityService {
         return roleSet;
     }
 
-    public Set<String> getAuthoritySetByUserId(Long userId) {
-        Set<String> authoritySet = new TreeSet<>();
-        baseAuthorityMapper.findByUserId(userId).forEach(r -> authoritySet.add(r.getAuthorityCode()));
-        return authoritySet;
+    /**
+     * 获取用户所有生效的权限码
+     * @param userId
+     * @return
+     */
+    public Set<String> getAuthorityCodeSetByUserId(Long userId) {
+        Set<String> authorityCodeSet = new TreeSet<>();
+        Set<BaseAuthority> authoritiesSet = getAuthoritySetByUserId(userId);
+        authoritiesSet.forEach(r -> authorityCodeSet.add(r.getAuthorityCode()));
+        return authorityCodeSet;
+    }
+
+    /**
+     * 获取用户所有生效的权限
+     * @param userId
+     * @return
+     */
+    public Set<BaseAuthority> getAuthoritySetByUserId(Long userId) {
+        Set<BaseAuthority> authoritiesSet = new LinkedHashSet<>();
+        List<BaseAuthority> authorityList = baseAuthorityMapper.findByUserId(userId);
+        authoritiesSet.addAll(authorityList);
+        List<BaseAuthority> authorityList1 = baseAuthorityMapper.findChildrenAndDescendantByIds(
+                authorityList.stream().filter(e -> BaseAuthority.Authority_Type_Children.equals(e.getAuthorityType()))
+                        .map(e -> e.getId()).collect(Collectors.toList()),
+                authorityList.stream().filter(e -> BaseAuthority.Authority_Type_Posterity.equals(e.getAuthorityType()))
+                        .map(e -> e.getId()).collect(Collectors.toList())
+        );
+        authoritiesSet.addAll(authorityList1);
+        return authoritiesSet;
     }
 }

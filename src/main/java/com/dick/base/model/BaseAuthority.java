@@ -34,4 +34,17 @@ public class BaseAuthority {
 
     @TableLogic
     private Boolean deleted;
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseAuthority authority = (BaseAuthority) o;
+        return id.equals(authority.id);
+    }
 }

@@ -14,4 +14,5 @@ public class ExceptionProperties {
     private String systemError;
     private String usernameDuplicated;
     private String usernameOrPasswordError;
+    private String userNotLogin;
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dick.base.mapper.BaseAuthorityMapper" >
+    <select id="findChildrenAndDescendantByIds" resultType="com.dick.base.model.BaseAuthority">
+    SELECT
+        id, authority_code, authority_type, name
+    FROM
+        base_authority
+    <where>
+        id IN
+        (
+            SELECT
+                descendant
+            FROM
+                base_authority_path
+            <where>
+                <if test="ids1.size() > 0">
+                (ancestor IN
+                 <foreach collection="ids1" open="(" separator="," close=")" item="item">
+                    #item
+                 </foreach>
+                 AND distance = 1) OR
+                </if>
+                <if test="ids2.size() > 0">
+                (ancestor IN
+                <foreach collection="ids2" open="(" separator="," close=")" item="item">
+                    #item
+                </foreach>
+                AND distance >= 1)
+                </if>
+                <if test="ids1.size() == 0 and ids2.size() == 0">
+                    1 = 2
+                </if>
+            </where>
+        )
+    </where>
+    </select>
+</mapper>

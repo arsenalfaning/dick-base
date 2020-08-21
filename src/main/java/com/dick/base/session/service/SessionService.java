@@ -114,7 +114,7 @@ public class SessionService implements UserDetailsService {
         baseInfo.setUsername(user.getUsername());
         baseInfo.setSignUpTime(LocalDateTime.now());
         baseInfo.setRoles(authorityService.getRoleSetByUserId(user.getId()));
-        baseInfo.setAuthorities(authorityService.getAuthoritySetByUserId(user.getId()));
+        baseInfo.setAuthorities(authorityService.getAuthorityCodeSetByUserId(user.getId()));
         return baseInfo;
     }
 
