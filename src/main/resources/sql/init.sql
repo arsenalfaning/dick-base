@@ -26,12 +26,6 @@ CREATE TABLE `base_role` (
   UNIQUE KEY `role_code_UNIQUE` (`role_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
 
-CREATE TABLE `base_test` (
-  `id` int NOT NULL,
-  `roles` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE `base_user` (
   `id` bigint unsigned NOT NULL COMMENT '用户id',
   `username` varchar(32) NOT NULL COMMENT '用户名',
